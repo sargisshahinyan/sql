@@ -5,7 +5,7 @@
 
 #include <vector>
 
-#define FILE_PATH "C:\\Users\\shahi\\Desktop\\data.dat"
+#define FILE_PATH "Lecturer.dat"
 
 using namespace std;
 
@@ -14,6 +14,10 @@ SQL::SQL()
 	strcpy(keys[0], "name");
 	strcpy(keys[1], "lastName");
 	strcpy(keys[2], "dep");
+
+	// Creating file if not exists
+	FILE *f = fopen(FILE_PATH, "a");
+	fclose(f);
 }
 
 SQL::~SQL()
@@ -31,6 +35,10 @@ bool SQL::query(MyString &query)
 	else if (query.indexOf("ADD") == 0)
 	{
 		return addData(query);
+	}
+	else if (query.indexOf("DELETE") == 0)
+	{
+		return removeData(query);
 	}
 
 	return false;
@@ -68,48 +76,11 @@ bool SQL::getData(MyString &query)
 
 	if (conditionIndex != -1)
 	{
-		conditions = query.substring(query.indexOf("WHERE") + 5).split(',');
-
-		for (int i = 0; i < conditions.size(); ++i)
-		{
-			conditions[i].trim();
-
-			bool isConditionValid = false;
-
-			for (int j = 0; j < 3; ++j)
-			{
-				if (conditions[i].indexOf(keys[j]) == 0 && (conditions[i].indexOf("==") != -1 || conditions[i].indexOf("!=") != -1))
-				{
-					isConditionValid = true;
-					break;
-				}
-			}
-
-			if (!isConditionValid)
-			{
-				cout << "Problem in condition: " << conditions[i] << '\n';
-				return false;
-			}
-		}
+		conditions = getConditions(query);
 	}
 
-	// Creating file if not exists
-	FILE *f = fopen(FILE_PATH, "a");
-	fclose(f);
-
-	f = fopen(FILE_PATH, "rb");
-
-	fseek(f, 0, SEEK_END);
-	int size = ftell(f);
-	fseek(f, 0, SEEK_SET);
-
-	int n = size / sizeof(Lecturer);
-
-	Lecturer *data = new Lecturer[n];
-
-	fread(data, sizeof(Lecturer), n, f);
-
-	fclose(f);
+	int n;
+	Lecturer *data = readFile(n);
 
 	cout << endl;
 
@@ -122,37 +93,7 @@ bool SQL::getData(MyString &query)
 
 	for (int i = 0; i < n; ++i)
 	{
-		bool matching = true;
-
-		for (int j = 0; j < conditions.size(); ++j)
-		{
-			bool mustEqual = conditions[j].indexOf("==") != -1;
-			bool isEqual;
-
-			MyString str = conditions[j].substring(conditions[j].indexOf(mustEqual ? "==" : "!=") + 2);
-			str.trim();
-
-			if (conditions[j].indexOf("name") == 0)
-			{
-				isEqual = str == data[i].name;
-			}
-			else if (conditions[j].indexOf("lastName") == 0)
-			{
-				isEqual = str == data[i].lastName;
-			}
-			else if (conditions[j].indexOf("dep") == 0)
-			{
-				isEqual = str == data[i].dep;
-			}
-
-			if (mustEqual ^ isEqual != 0)
-			{
-				matching = false;
-				break;
-			}
-		}
-
-		if (!matching)
+		if (!checkConditions(conditions, data[i]))
 		{
 			continue;
 		}
@@ -248,4 +189,124 @@ bool SQL::addData(MyString &query)
 	cout << "Done\n";
 
 	return true;
+}
+
+bool SQL::removeData(MyString &query)
+{
+	vector<MyString> conditions;
+
+	if (query.indexOf("WHERE") != -1)
+	{
+		conditions = getConditions(query);
+	}
+
+	int n;
+	Lecturer *data = readFile(n);
+
+	FILE *f = fopen(FILE_PATH, "wb");
+
+	for (int i = 0; i < n; ++i)
+	{
+		if (checkConditions(conditions, data[i]))
+		{
+			--n;
+			if (n != i) 
+			{
+				memmove(data + i, data + i + 1, sizeof(Lecturer));
+				--i;
+			}
+		}
+	}
+
+	fwrite(data, sizeof(Lecturer), n, f);
+	fclose(f);
+
+	delete[] data;
+
+	cout << "Done\n";
+
+	return true;
+}
+
+vector<MyString> SQL::getConditions(MyString &query)
+{
+	vector<MyString> conditions = query.substring(query.indexOf("WHERE") + 5).split(',');
+
+	for (int i = 0; i < conditions.size(); ++i)
+	{
+		conditions[i].trim();
+
+		bool isConditionValid = false;
+
+		for (int j = 0; j < 3; ++j)
+		{
+			if (conditions[i].indexOf(keys[j]) == 0 && conditions[i].indexOf("=") != -1)
+			{
+				isConditionValid = true;
+				break;
+			}
+		}
+
+		if (!isConditionValid)
+		{
+			cout << "Problem in condition: " << conditions[i] << '\n';
+			exit;
+		}
+	}
+
+	return conditions;
+}
+
+bool SQL::checkConditions(vector<MyString> &conditions, const Lecturer &data)
+{
+	bool matching = true;
+
+	for (int j = 0; j < conditions.size(); ++j)
+	{
+		bool mustEqual = conditions[j].indexOf("!=") == -1;
+		bool isEqual;
+
+		MyString str = conditions[j].substring(conditions[j].indexOf("=") + 1);
+		str.trim();
+
+		if (conditions[j].indexOf("name") == 0)
+		{
+			isEqual = str == data.name;
+		}
+		else if (conditions[j].indexOf("lastName") == 0)
+		{
+			isEqual = str == data.lastName;
+		}
+		else if (conditions[j].indexOf("dep") == 0)
+		{
+			isEqual = str == data.dep;
+		}
+
+		if (mustEqual ^ isEqual != 0)
+		{
+			matching = false;
+			break;
+		}
+	}
+
+	return matching;
+}
+
+Lecturer* SQL::readFile(int &n)
+{
+	FILE *f = fopen(FILE_PATH, "rb");
+
+	fseek(f, 0, SEEK_END);
+	int size = ftell(f);
+	fseek(f, 0, SEEK_SET);
+
+	n = size / sizeof(Lecturer);
+
+	Lecturer *data = new Lecturer[n];
+
+	fread(data, sizeof(Lecturer), n, f);
+
+	fclose(f);
+
+	return data;
 }
