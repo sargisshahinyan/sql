@@ -273,5 +273,5 @@ char* MyString::toString()
 	char newStr[255];
 	strcpy(newStr, str);
 
-	return str;
+	return newStr;
 }
