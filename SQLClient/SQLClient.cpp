@@ -1,62 +1,62 @@
 #include "stdafx.h"
-#include "SQL.h"
-#include "MyString.h"
-#include "Lecturer.h"
-
 #include <vector>
 
-#define FILE_PATH "Lecturer.dat"
+#include "SQLClient.h"
+#include "ExtString.h"
+#include "Address.h"
+#include "FilePath.h"
 
 using namespace std;
 
-SQL::SQL()
+SQLClient::SQLClient()
 {
-	strcpy(keys[0], "name");
-	strcpy(keys[1], "lastName");
-	strcpy(keys[2], "dep");
+	strcpy(keys[0], "country");
+	strcpy(keys[1], "city");
+	strcpy(keys[2], "str");
+	strcpy(keys[3], "apt");
 
 	// Creating file if not exists
 	FILE *f = fopen(FILE_PATH, "a");
 	fclose(f);
 }
 
-SQL::~SQL()
+SQLClient::~SQLClient()
 {
 }
 
-bool SQL::query(MyString &query)
+bool SQLClient::exec(ExtString &query)
 {
 	query.trim();
 
 	if (query.indexOf("SELECT") == 0)
 	{
-		return getData(query);
+		return selectData(query);
 	}
 	else if (query.indexOf("ADD") == 0)
 	{
-		return addData(query);
+		return insertData(query);
 	}
 	else if (query.indexOf("DELETE") == 0)
 	{
-		return removeData(query);
+		return deleteData(query);
 	}
 
 	return false;
 }
 
-bool SQL::getData(MyString &query)
+bool SQLClient::selectData(ExtString &query)
 {
 	int conditionIndex = query.indexOf("WHERE");
 
-	vector<MyString> fields = query.substring(query.indexOf("SELECT") + 6, conditionIndex != -1 ? conditionIndex : query.length()).split(',');
+	vector<ExtString> fields = query.substring(query.indexOf("SELECT") + 6, conditionIndex != -1 ? conditionIndex : query.length()).split(',');
 
-	for (int i = 0; i < fields.size(); ++i)
+	for (int i = 0; i < fields.size(); i++)
 	{
 		fields[i].trim();
 
 		bool isFiledValid = false;
 
-		for (int j = 0; j < 3; j++)
+		for (int j = 0; j < _countof(keys); j++)
 		{
 			if (fields[i] == keys[j])
 			{
@@ -72,7 +72,7 @@ bool SQL::getData(MyString &query)
 		}
 	}
 
-	vector<MyString> conditions;
+	vector<ExtString> conditions;
 
 	if (conditionIndex != -1)
 	{
@@ -80,7 +80,7 @@ bool SQL::getData(MyString &query)
 	}
 
 	int n;
-	Lecturer *data = readFile(n);
+	Address *data = readFile(n);
 
 	cout << endl;
 
@@ -100,17 +100,21 @@ bool SQL::getData(MyString &query)
 
 		for (int j = 0; j < fields.size(); ++j)
 		{
-			if (fields[j] == "name")
+			if (fields[j] == "country")
 			{
-				cout << data[i].name;
+				cout << data[i].country;
 			}
-			else if (fields[j] == "lastName")
+			else if (fields[j] == "city")
 			{
-				cout << data[i].lastName;
+				cout << data[i].city;
 			}
-			else if (fields[j] == "dep")
+			else if (fields[j] == "str")
 			{
-				cout << data[i].dep;
+				cout << data[i].str;
+			}
+			else if (fields[j] == "apt")
+			{
+				cout << data[i].apt;
 			}
 
 			cout << '\t';
@@ -123,14 +127,14 @@ bool SQL::getData(MyString &query)
 }
 
 
-bool SQL::addData(MyString &query)
+bool SQLClient::insertData(ExtString &query)
 {
-	vector<MyString> data = query.substring(query.indexOf("ADD") + 3).split(',');
-	Lecturer newItem;
+	vector<ExtString> data = query.substring(query.indexOf("ADD") + 3).split(',');
+	Address newItem;
 
-	if (data.size() != 3)
+	if (data.size() != _countof(keys))
 	{
-		cout << "You need input 3 fields, " << data.size() << " given\n";
+		cout << "You need input " << _countof(keys) << " fields, " << data.size() << " given\n";
 		return false;
 	}
 
@@ -140,7 +144,7 @@ bool SQL::addData(MyString &query)
 
 		bool isDataValid = false;
 
-		for (int j = 0; j < 3; ++j)
+		for (int j = 0; j < _countof(keys); ++j)
 		{
 			if (data[i].indexOf(keys[j]) == 0 && data[i].indexOf('=') != -1)
 			{
@@ -155,15 +159,19 @@ bool SQL::addData(MyString &query)
 			return false;
 		}
 
-		if (data[i].indexOf("name") == 0)
+		if (data[i].indexOf("country") == 0)
 		{
-			strcpy(newItem.name, data[i].substring(data[i].indexOf('=') + 1).trim().toString());
+			strcpy(newItem.country, data[i].substring(data[i].indexOf('=') + 1).trim().toString());
 		}
-		else if (data[i].indexOf("lastName") == 0)
+		else if (data[i].indexOf("city") == 0)
 		{
-			strcpy(newItem.lastName, data[i].substring(data[i].indexOf('=') + 1).trim().toString());
+			strcpy(newItem.city, data[i].substring(data[i].indexOf('=') + 1).trim().toString());
 		}
-		else if (data[i].indexOf("dep") == 0)
+		else if (data[i].indexOf("str") == 0)
+		{
+			strcpy(newItem.str, data[i].substring(data[i].indexOf('=') + 1).trim().toString());
+		}
+		else if (data[i].indexOf("apt") == 0)
 		{
 			char num[100];
 			strcpy(num, data[i].substring(data[i].indexOf('=') + 1).trim().toString());
@@ -176,13 +184,13 @@ bool SQL::addData(MyString &query)
 				dec = dec * 10 + (num[i] - '0');
 			}
 
-			newItem.dep = dec;
+			newItem.apt = dec;
 		}
 	}
 
 	FILE *f = fopen(FILE_PATH, "ab");
 
-	fwrite(&newItem, sizeof(Lecturer), 1, f);
+	fwrite(&newItem, sizeof(Address), 1, f);
 
 	fclose(f);
 
@@ -191,9 +199,9 @@ bool SQL::addData(MyString &query)
 	return true;
 }
 
-bool SQL::removeData(MyString &query)
+bool SQLClient::deleteData(ExtString &query)
 {
-	vector<MyString> conditions;
+	vector<ExtString> conditions;
 
 	if (query.indexOf("WHERE") != -1)
 	{
@@ -201,7 +209,7 @@ bool SQL::removeData(MyString &query)
 	}
 
 	int n;
-	Lecturer *data = readFile(n);
+	Address *data = readFile(n);
 
 	FILE *f = fopen(FILE_PATH, "wb");
 
@@ -210,15 +218,15 @@ bool SQL::removeData(MyString &query)
 		if (checkConditions(conditions, data[i]))
 		{
 			--n;
-			if (n != i) 
+			if (n != i)
 			{
-				memmove(data + i, data + i + 1, sizeof(Lecturer));
+				memmove(data + i, data + i + 1, sizeof(Address));
 				--i;
 			}
 		}
 	}
 
-	fwrite(data, sizeof(Lecturer), n, f);
+	fwrite(data, sizeof(Address), n, f);
 	fclose(f);
 
 	delete[] data;
@@ -228,9 +236,9 @@ bool SQL::removeData(MyString &query)
 	return true;
 }
 
-vector<MyString> SQL::getConditions(MyString &query)
+vector<ExtString> SQLClient::getConditions(ExtString &query)
 {
-	vector<MyString> conditions = query.substring(query.indexOf("WHERE") + 5).split(',');
+	vector<ExtString> conditions = query.substring(query.indexOf("WHERE") + 5).split(',');
 
 	for (int i = 0; i < conditions.size(); ++i)
 	{
@@ -238,7 +246,7 @@ vector<MyString> SQL::getConditions(MyString &query)
 
 		bool isConditionValid = false;
 
-		for (int j = 0; j < 3; ++j)
+		for (int j = 0; j < _countof(keys); ++j)
 		{
 			if (conditions[i].indexOf(keys[j]) == 0 && conditions[i].indexOf("=") != -1)
 			{
@@ -257,7 +265,7 @@ vector<MyString> SQL::getConditions(MyString &query)
 	return conditions;
 }
 
-bool SQL::checkConditions(vector<MyString> &conditions, const Lecturer &data)
+bool SQLClient::checkConditions(vector<ExtString> &conditions, const Address &data)
 {
 	bool matching = true;
 
@@ -266,20 +274,24 @@ bool SQL::checkConditions(vector<MyString> &conditions, const Lecturer &data)
 		bool mustEqual = conditions[j].indexOf("!=") == -1;
 		bool isEqual;
 
-		MyString str = conditions[j].substring(conditions[j].indexOf("=") + 1);
+		ExtString str = conditions[j].substring(conditions[j].indexOf("=") + 1);
 		str.trim();
 
-		if (conditions[j].indexOf("name") == 0)
+		if (conditions[j].indexOf("country") == 0)
 		{
-			isEqual = str == data.name;
+			isEqual = str == data.country;
 		}
-		else if (conditions[j].indexOf("lastName") == 0)
+		else if (conditions[j].indexOf("city") == 0)
 		{
-			isEqual = str == data.lastName;
+			isEqual = str == data.city;
 		}
-		else if (conditions[j].indexOf("dep") == 0)
+		else if (conditions[j].indexOf("str") == 0)
 		{
-			isEqual = str == data.dep;
+			isEqual = str == data.str;
+		}
+		else if (conditions[j].indexOf("apt") == 0)
+		{
+			isEqual = str == data.apt;
 		}
 
 		if (mustEqual ^ isEqual != 0)
@@ -292,7 +304,7 @@ bool SQL::checkConditions(vector<MyString> &conditions, const Lecturer &data)
 	return matching;
 }
 
-Lecturer* SQL::readFile(int &n)
+Address* SQLClient::readFile(int &n)
 {
 	FILE *f = fopen(FILE_PATH, "rb");
 
@@ -300,11 +312,11 @@ Lecturer* SQL::readFile(int &n)
 	int size = ftell(f);
 	fseek(f, 0, SEEK_SET);
 
-	n = size / sizeof(Lecturer);
+	n = size / sizeof(Address);
 
-	Lecturer *data = new Lecturer[n];
+	Address *data = new Address[n];
 
-	fread(data, sizeof(Lecturer), n, f);
+	fread(data, sizeof(Address), n, f);
 
 	fclose(f);
 

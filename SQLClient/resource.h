@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by Kursayin1.rc
+// Used by SQLClient.rc
 
 // Next default values for new objects
 // 

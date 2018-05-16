@@ -22,8 +22,9 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{1EB53964-4098-45D8-8FCB-25F49D923DD0}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>Kursayin</RootNamespace>
+    <RootNamespace>SQLClient</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <ProjectName>SQLClient</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -147,17 +148,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Lecturer.h" />
-    <ClInclude Include="MyString.h" />
+    <ClInclude Include="FilePath.h" />
+    <ClInclude Include="Address.h" />
+    <ClInclude Include="ExtString.h" />
     <ClInclude Include="resource1.h" />
-    <ClInclude Include="SQL.h" />
+    <ClInclude Include="SQLClient.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Kursayin.cpp" />
-    <ClCompile Include="MyString.cpp" />
-    <ClCompile Include="SQL.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="ExtString.cpp" />
+    <ClCompile Include="SQLClient.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -166,7 +168,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Kursayin1.rc" />
+    <ResourceCompile Include="SQLClient.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,37 +1,39 @@
-#include "stdafx.h"
-#include "MyString.h"
 #define _CRT_SECURE_NO_WARNINGS
+
+#include "stdafx.h"
 
 #include <cstring>
 #include <cctype>
 #include <iostream>
 #include <vector>
 
-MyString::MyString(const char str[])
+#include "ExtString.h"
+
+ExtString::ExtString(const char str[])
 {
 	this->str = new char[strlen(str) + 1];
 	strcpy(this->str, str);
 }
 
-MyString::MyString(const MyString &object)
+ExtString::ExtString(const ExtString &object)
 {
 	str = new char[strlen(object.str) + 1];
 	strcpy(str, object.str);
 }
 
-MyString::MyString()
+ExtString::ExtString()
 {
 	str = new char[1];
 	str[0] = '\0';
 }
 
 
-MyString::~MyString()
+ExtString::~ExtString()
 {
 	delete[] str;
 }
 
-MyString MyString::operator=(const char str[])
+ExtString ExtString::operator=(const char str[])
 {
 	char *new_string = new char[strlen(str) + 1];
 	strcpy(new_string, str);
@@ -42,18 +44,18 @@ MyString MyString::operator=(const char str[])
 	return *this;
 }
 
-MyString MyString::operator=(MyString &obj)
+ExtString ExtString::operator=(ExtString &obj)
 {
 	*this = obj.str;
 	return *this;
 }
 
-bool MyString::operator==(const char str[])
+bool ExtString::operator==(const char str[])
 {
 	return strcmp(this->str, str) == 0;
 }
 
-bool MyString::operator==(const int n)
+bool ExtString::operator==(const int n)
 {
 	char numStr[12];
 	sprintf(numStr, "%d", n);
@@ -61,27 +63,27 @@ bool MyString::operator==(const int n)
 	return *this == numStr;
 }
 
-bool MyString::operator==(const MyString &obj)
+bool ExtString::operator==(const ExtString &obj)
 {
 	return *this == obj.str;
 }
 
-bool MyString::operator!=(const char str[])
+bool ExtString::operator!=(const char str[])
 {
 	return !(*this == str);
 }
 
-bool MyString::operator!=(const int n)
+bool ExtString::operator!=(const int n)
 {
 	return !(*this == n);
 }
 
-bool MyString::operator!=(const MyString &obj)
+bool ExtString::operator!=(const ExtString &obj)
 {
 	return !(*this == obj.str);
 }
 
-MyString MyString::trim()
+ExtString ExtString::trim()
 {
 	int start = 0, end = 0;
 
@@ -113,20 +115,20 @@ MyString MyString::trim()
 	return *this;
 }
 
-int MyString::length()
+int ExtString::length()
 {
 	return strlen(str);
 }
 
-std::vector<MyString> MyString::split(const char delimeter)
+std::vector<ExtString> ExtString::split(const char delimeter)
 {
 	char str[2] = { delimeter, '\0' };
 	return split(str);
 }
 
-std::vector<MyString> MyString::split(const char delimeter[])
+std::vector<ExtString> ExtString::split(const char delimeter[])
 {
-	std::vector<MyString> arr;
+	std::vector<ExtString> arr;
 	int delimeterLength = strlen(delimeter), start = 0, end;
 	char *pointer = str;
 
@@ -135,7 +137,7 @@ std::vector<MyString> MyString::split(const char delimeter[])
 		char *localStr = new char[end - start];
 		strncpy(localStr, pointer, end - start);
 		localStr[end - start] = '\0';
-		MyString item = localStr;
+		ExtString item = localStr;
 		arr.push_back(item);
 		pointer += end - start + delimeterLength;
 		start = end + delimeterLength;
@@ -143,14 +145,14 @@ std::vector<MyString> MyString::split(const char delimeter[])
 
 	if (strlen(pointer))
 	{
-		MyString item = pointer;
+		ExtString item = pointer;
 		arr.push_back(item);
 	}
 
 	return arr;
 }
 
-int MyString::indexOf(const char searchElement, int fromIndex)
+int ExtString::indexOf(const char searchElement, int fromIndex)
 {
 	int len = strlen(str);
 
@@ -170,7 +172,7 @@ int MyString::indexOf(const char searchElement, int fromIndex)
 	return -1;
 }
 
-int MyString::indexOf(const char *searchString, int fromIndex)
+int ExtString::indexOf(const char *searchString, int fromIndex)
 {
 	int len = strlen(str);
 	int searchLen = strlen(searchString);
@@ -192,12 +194,12 @@ int MyString::indexOf(const char *searchString, int fromIndex)
 	return -1;
 }
 
-int MyString::indexOf(const MyString &obj, int fromIndex)
+int ExtString::indexOf(const ExtString &obj, int fromIndex)
 {
 	return indexOf(obj.str, fromIndex);
 }
 
-int MyString::lastIndexOf(const char searchElement, int fromIndex)
+int ExtString::lastIndexOf(const char searchElement, int fromIndex)
 {
 	int len = strlen(str);
 
@@ -217,10 +219,10 @@ int MyString::lastIndexOf(const char searchElement, int fromIndex)
 	return -1;
 }
 
-MyString MyString::substring(const int start, const int end)
+ExtString ExtString::substring(const int start, const int end)
 {
 	int len = strlen(str);
-	MyString result = "";
+	ExtString result = "";
 
 	if (start >= end || start >= len - 1 || end > len) 
 	{
@@ -240,19 +242,19 @@ MyString MyString::substring(const int start, const int end)
 	return result;
 }
 
-MyString MyString::substring(const int start)
+ExtString ExtString::substring(const int start)
 {
 	return substring(start, strlen(str));
 }
 
-ostream &operator<<(ostream &output, const MyString &c)
+ostream &operator<<(ostream &output, const ExtString &c)
 {
 	output << c.str;
 
-	return output;   //  enables cascaded calls
+	return output;
 }
 
-void MyString::toLowerCase()
+void ExtString::toLowerCase()
 {
 	for (int i = 0; i < strlen(str); i++)
 	{
@@ -260,7 +262,7 @@ void MyString::toLowerCase()
 	}
 }
 
-void MyString::toUpperCase()
+void ExtString::toUpperCase()
 {
 	for (int i = 0; i < strlen(str); i++)
 	{
@@ -268,7 +270,7 @@ void MyString::toUpperCase()
 	}
 }
 
-char* MyString::toString()
+char* ExtString::toString()
 {
 	char newStr[255];
 	strcpy(newStr, str);
