@@ -50,6 +50,30 @@ ExtString ExtString::operator=(ExtString &obj)
 	return *this;
 }
 
+ExtString ExtString::operator+(const char str[])
+{
+  char *new_string = new char[strlen(this->str) + strlen(str) + 1];
+  strcpy(new_string, this->str);
+  strcpy(new_string, str);
+
+  delete[] this->str;
+  this->str = new_string;
+
+  return *this;
+}
+
+ExtString ExtString::operator+(ExtString &obj)
+{
+  char *new_string = new char[strlen(this->str) + strlen(obj.str) + 1];
+  strcpy(new_string, this->str);
+  strcpy(new_string, obj.str);
+
+  delete[] this->str;
+  this->str = new_string;
+
+  return *this;
+}
+
 bool ExtString::operator==(const char str[])
 {
 	return strcmp(this->str, str) == 0;

@@ -21,6 +21,8 @@ public:
 
 	ExtString operator=(const char[]);
 	ExtString operator=(ExtString &obj);
+  ExtString operator+(const char[]);
+  ExtString operator+(ExtString &obj);
 	bool operator==(const char[]);
 	bool operator==(const int);
 	bool operator==(const ExtString&);
