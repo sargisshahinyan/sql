@@ -107,6 +107,24 @@ bool ExtString::operator!=(const ExtString &obj)
 	return !(*this == obj.str);
 }
 
+ExtString::operator int() const
+{
+  int i;
+  sscanf(str, "%d", &i);
+
+  return i;
+}
+
+char ExtString::operator[](int i) const
+{
+  return this->str[i];
+}
+
+char & ExtString::operator[](int i)
+{
+  return this->str[i];
+}
+
 ExtString ExtString::trim()
 {
 	int start = 0, end = 0;
@@ -266,16 +284,39 @@ ExtString ExtString::substring(const int start, const int end)
 	return result;
 }
 
+ExtString ExtString::substr(const int start, const int count)
+{
+  return substring(start, strlen(str) - count - 1);
+}
+
+ExtString ExtString::remove(const int start, const int count)
+{
+  char *newStr = new char[strlen(str) + 1 - count];
+
+  strcpy(newStr, substring(0, start).str);
+  strcpy(newStr, substring(start + count).str);
+
+  delete[] this->str;
+  this->str = newStr;
+
+  return *this;
+}
+
 ExtString ExtString::substring(const int start)
 {
 	return substring(start, strlen(str));
 }
 
-ostream &operator<<(ostream &output, const ExtString &c)
+ostream &operator<<(ostream &output, const ExtString &obj)
 {
-	output << c.str;
+	output << obj.str;
 
 	return output;
+}
+
+istream &operator>>(istream &input, const ExtString &obj)
+{
+  return input >> obj.str;
 }
 
 void ExtString::toLowerCase()

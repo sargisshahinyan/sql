@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 
-using std::ostream;
+using namespace std;
 
 class ExtString
 {
@@ -12,6 +12,7 @@ class ExtString
 private:
 	char *str;
 	friend ostream &operator<<(ostream &, const ExtString &);
+  friend istream &operator>>(istream &, const ExtString &);
 
 public:
 	ExtString();
@@ -29,11 +30,14 @@ public:
 	bool operator!=(const char[]);
 	bool operator!=(const int);
 	bool operator!=(const ExtString&);
+  operator int() const;
+  char operator [](int i) const;
+  char &operator [](int i);
 
 	int length();
 	ExtString trim();
-	std::vector<ExtString> split(const char);
-	std::vector<ExtString> split(const char[]);
+	vector<ExtString> split(const char);
+	vector<ExtString> split(const char[]);
 
 	int indexOf(const char, int = 0);
 	int indexOf(const char*, int = 0);
@@ -42,6 +46,8 @@ public:
 
 	ExtString substring(const int);
 	ExtString substring(const int, const int);
+  ExtString substr(const int, const int);
+  ExtString remove(const int, const int);
 
 	void toLowerCase();
 	void toUpperCase();
