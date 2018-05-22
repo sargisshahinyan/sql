@@ -52,26 +52,18 @@ ExtString ExtString::operator=(ExtString &obj)
 
 ExtString ExtString::operator+(const char str[])
 {
-  char *new_string = new char[strlen(this->str) + strlen(str) + 1];
-  strcpy(new_string, this->str);
-  strcpy(new_string, str);
+	char *new_string = new char[strlen(this->str) + strlen(str) + 1];
+	strcpy(new_string, this->str);
+	strcat(new_string, str);
 
-  delete[] this->str;
-  this->str = new_string;
+	ExtString newStr = new_string;
 
-  return *this;
+	return newStr;
 }
 
 ExtString ExtString::operator+(ExtString &obj)
 {
-  char *new_string = new char[strlen(this->str) + strlen(obj.str) + 1];
-  strcpy(new_string, this->str);
-  strcpy(new_string, obj.str);
-
-  delete[] this->str;
-  this->str = new_string;
-
-  return *this;
+	return *this + obj.str;
 }
 
 bool ExtString::operator==(const char str[])
@@ -109,20 +101,20 @@ bool ExtString::operator!=(const ExtString &obj)
 
 ExtString::operator int() const
 {
-  int i;
-  sscanf(str, "%d", &i);
+	int i;
+	sscanf(str, "%d", &i);
 
-  return i;
+	return i;
 }
 
 char ExtString::operator[](int i) const
 {
-  return this->str[i];
+	return this->str[i];
 }
 
 char & ExtString::operator[](int i)
 {
-  return this->str[i];
+	return this->str[i];
 }
 
 ExtString ExtString::trim()
@@ -284,22 +276,48 @@ ExtString ExtString::substring(const int start, const int end)
 	return result;
 }
 
-ExtString ExtString::substr(const int start, const int count)
+ExtString ExtString::substr(const unsigned int start, const unsigned int count)
 {
-  return substring(start, strlen(str) - count - 1);
+	ExtString result = "";
+
+	if (start >= strlen(str) || count == 0)
+	{
+		return result;
+	}
+
+	char *new_string = new char[count + 1];
+
+	strncpy(new_string, str + start, count);
+
+	new_string[count] = '\0';
+
+	result = new_string;
+
+	return result;
 }
 
-ExtString ExtString::remove(const int start, const int count)
+ExtString ExtString::remove(const unsigned int start, const unsigned int count)
 {
-  char *newStr = new char[strlen(str) + 1 - count];
+	if (count == 0)
+	{
+		return *this;
+	}
 
-  strcpy(newStr, substring(0, start).str);
-  strcpy(newStr, substring(start + count).str);
+	if (start + count > strlen(str))
+	{
+		*this = "";
+		return *this;
+	}
 
-  delete[] this->str;
-  this->str = newStr;
+	char *newStr = new char[strlen(str) + 1 - count];
 
-  return *this;
+	strcpy(newStr, substring(0, start).str);
+	strcat(newStr, substring(start + count).str);
+
+	delete[] this->str;
+	this->str = newStr;
+
+	return *this;
 }
 
 ExtString ExtString::substring(const int start)
@@ -314,9 +332,21 @@ ostream &operator<<(ostream &output, const ExtString &obj)
 	return output;
 }
 
-istream &operator>>(istream &input, const ExtString &obj)
+istream &operator>>(istream &input, ExtString &obj)
 {
-  return input >> obj.str;
+	char str[255];
+	cin.getline(str, 255, '\n');
+
+	obj = str;
+
+	return input;
+}
+
+ExtString operator+(const char *str1, ExtString &str2)
+{
+	ExtString new_string = str1;
+
+	return new_string + str2;
 }
 
 void ExtString::toLowerCase()
