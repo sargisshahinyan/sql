@@ -44,9 +44,14 @@ ExtString ExtString::operator=(const char str[])
 	return *this;
 }
 
-ExtString ExtString::operator=(ExtString &obj)
+ExtString ExtString::operator=(ExtString obj)
 {
-	*this = obj.str;
+	char *new_string = new char[strlen(obj.str) + 1];
+	strcpy(new_string, obj.str);
+
+	delete[] this->str;
+	this->str = new_string;
+
 	return *this;
 }
 
@@ -63,7 +68,13 @@ ExtString ExtString::operator+(const char str[])
 
 ExtString ExtString::operator+(ExtString &obj)
 {
-	return *this + obj.str;
+	char *new_string = new char[strlen(this->str) + strlen(obj.str) + 1];
+	strcpy(new_string, this->str);
+	strcat(new_string, obj.str);
+
+	ExtString newStr = new_string;
+
+	return newStr;
 }
 
 bool ExtString::operator==(const char str[])
@@ -258,7 +269,7 @@ ExtString ExtString::substring(const int start, const int end)
 	int len = strlen(str);
 	ExtString result = "";
 
-	if (start >= end || start >= len - 1 || end > len) 
+	if (start < 0 || end < 0 || start >= end || start >= len - 1 || end > len) 
 	{
 		return result;
 	}
@@ -365,10 +376,7 @@ void ExtString::toUpperCase()
 	}
 }
 
-char* ExtString::toString()
+const char* ExtString::toString()
 {
-	char newStr[255];
-	strcpy(newStr, str);
-
-	return newStr;
+	return str;
 }

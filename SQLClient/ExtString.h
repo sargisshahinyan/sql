@@ -8,7 +8,6 @@ using namespace std;
 
 class ExtString
 {
-
 private:
 	char *str;
 	friend ostream &operator<<(ostream &, const ExtString &);
@@ -21,7 +20,7 @@ public:
 	~ExtString();
 
 	ExtString operator=(const char[]);
-	ExtString operator=(ExtString &obj);
+	ExtString operator=(ExtString obj);
 	ExtString operator+(const char[]);
 	ExtString operator+(ExtString &obj);
 	bool operator==(const char[]);
@@ -52,7 +51,7 @@ public:
 	void toLowerCase();
 	void toUpperCase();
 
-	char* toString();
+	const char* toString();
 
 };
 

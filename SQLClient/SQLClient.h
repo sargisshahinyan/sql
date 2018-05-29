@@ -1,5 +1,6 @@
 #include "ExtString.h"
 #include "Address.h"
+#include "Table.h"
 
 using namespace std;
 
@@ -8,18 +9,18 @@ class SQLClient
 
 private:
 	char keys[4][20];
+	ExtString query = "";
+	Table *table;
 
-	vector<ExtString> getConditions(ExtString&);
-	bool checkConditions(vector<ExtString>&, const Address&);
-	Address* readFile(int &);
+	vector<ExtString> getConditions();
 
-	bool selectData(ExtString&);
-	bool insertData(ExtString&);
-	bool deleteData(ExtString&);
+	bool selectData();
+	bool insertData();
+	bool deleteData();
 
 public:
-	SQLClient();
+	SQLClient(ExtString);
 	~SQLClient();
-	bool exec(ExtString&);
+	bool exec();
 
 };
