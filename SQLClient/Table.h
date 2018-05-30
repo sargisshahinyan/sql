@@ -8,10 +8,10 @@ using namespace std;
 class Table
 {
 protected:
-	char* FILE_PATH;
-	char **keys;
+	char* FILE_PATH = NULL;
+	char **keys = NULL;
 	int keysCount = 0;
-	Table *data;
+	Table *data = NULL;
 	virtual void readFile(int &);
 public:
 	Table();
@@ -22,6 +22,7 @@ public:
 	virtual bool checkConditions(vector<ExtString>, Table*) = 0;
 	virtual bool deleteData(vector<ExtString>);
 	virtual bool addData(vector<ExtString>) = 0;
-	virtual bool checkFields(vector<ExtString>);
+	virtual size_t getSize();
+	virtual bool checkFields(vector<ExtString>&);
 };
 

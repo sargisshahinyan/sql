@@ -28,7 +28,7 @@ SQLClient::SQLClient(ExtString query)
 		}
 
 		int conditionsIndex = query.indexOf("WHERE");
-		table = query.substring(query.indexOf("FROM" + 4), conditionsIndex != -1 ? conditionsIndex : query.length());
+		table = query.substring(query.indexOf("FROM") + 4, conditionsIndex != -1 ? conditionsIndex : query.length());
 	}
 	else
 	{

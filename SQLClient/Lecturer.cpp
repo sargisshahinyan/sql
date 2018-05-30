@@ -170,3 +170,8 @@ bool Lecturer::addData(vector<ExtString> data)
 
 	return true;
 }
+
+size_t Lecturer::getSize()
+{
+	return sizeof(Lecturer);
+}

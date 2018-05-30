@@ -2,17 +2,18 @@
 #include "Table.h"
 
 #include <cstdlib>
+#include <cstring>
 
 Table::Table()
 {
+	FILE_PATH = new char[1];
 	strcpy(FILE_PATH, "");
-	data = (Table*)malloc(200);
 }
 
 Table::Table(const char* path)
 {
+	FILE_PATH = new char[strlen(path) + 1];
 	strcpy(FILE_PATH, path);
-	data = (Table*)malloc(200);
 
 	// Creating file if not exists
 	FILE *f = fopen(FILE_PATH, "a");
@@ -22,7 +23,12 @@ Table::Table(const char* path)
 
 Table::~Table()
 {
-	free(data);
+	if (data != NULL)
+	{
+		free(data);
+	}
+
+	delete[] FILE_PATH;
 }
 
 bool Table::deleteData(vector<ExtString> conditions)
@@ -63,17 +69,16 @@ void Table::readFile(int &n)
 	int size = ftell(f);
 	fseek(f, 0, SEEK_SET);
 
-	n = size / sizeof(*this);
+	n = size / this->getSize();
 
-	free(data);
-	data = (Table*)malloc(sizeof(*this) * n);
+	data = (Table*)malloc(this->getSize() * n);
 
-	fread(data, sizeof(*this), n, f);
+	fread(data, this->getSize(), n, f);
 
 	fclose(f);
 }
 
-bool Table::checkFields(vector<ExtString> fields)
+bool Table::checkFields(vector<ExtString> &fields)
 {
 	for (int i = 0; i < fields.size(); i++)
 	{
@@ -81,7 +86,7 @@ bool Table::checkFields(vector<ExtString> fields)
 
 		bool isFiledValid = false;
 
-		for (int j = 0; j < 4; j++)
+		for (int j = 0; j < keysCount; j++)
 		{
 			if (fields[i] == keys[j])
 			{
@@ -98,4 +103,9 @@ bool Table::checkFields(vector<ExtString> fields)
 	}
 
 	return true;
+}
+
+size_t Table::getSize()
+{
+	return sizeof(Table);
 }
