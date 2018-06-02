@@ -48,15 +48,15 @@ bool Lecturer::printData(vector<ExtString> conditions, vector<ExtString> fields)
 
 	for (int i = 0; i < n; ++i)
 	{
-		if (!checkConditions(conditions, &data[i]))
+		Lecturer *row = static_cast<Lecturer*>(data + i);
+
+		if (!checkConditions(conditions, data + i))
 		{
 			continue;
 		}
 
 		for (int j = 0; j < fields.size(); ++j)
 		{
-			Lecturer *row = static_cast<Lecturer*>(&data[i]);
-
 			if (fields[j] == "name")
 			{
 				cout << row->name;
@@ -86,8 +86,10 @@ bool Lecturer::checkConditions(vector<ExtString> conditions, Table *data)
 
 	for (int j = 0; j < conditions.size(); ++j)
 	{
+		conditions[j].trim();
+
 		bool mustEqual = conditions[j].indexOf("!=") == -1;
-		bool isEqual;
+		bool isEqual = mustEqual;
 
 		ExtString str = conditions[j].substring(conditions[j].indexOf("=") + 1);
 		str.trim();
@@ -162,7 +164,7 @@ bool Lecturer::addData(vector<ExtString> data)
 
 	FILE *f = fopen(FILE_PATH, "ab");
 
-	fwrite(&newItem, sizeof(newItem), 1, f);
+	fwrite(&newItem, getSize(), 1, f);
 
 	fclose(f);
 
@@ -174,4 +176,10 @@ bool Lecturer::addData(vector<ExtString> data)
 size_t Lecturer::getSize()
 {
 	return sizeof(Lecturer);
+}
+
+Table* Lecturer::allocateMemory(int n)
+{
+	// return new Lecturer[n];
+	return (Table*)malloc(getSize() * n);
 }

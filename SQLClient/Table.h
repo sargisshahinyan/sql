@@ -22,7 +22,7 @@ public:
 	virtual bool checkConditions(vector<ExtString>, Table*) = 0;
 	virtual bool deleteData(vector<ExtString>);
 	virtual bool addData(vector<ExtString>) = 0;
-	virtual size_t getSize();
 	virtual bool checkFields(vector<ExtString>&);
+	virtual size_t getSize();
+	virtual Table* allocateMemory(int) = 0;
 };
-

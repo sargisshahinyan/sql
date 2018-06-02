@@ -22,10 +22,10 @@ SQLClient::SQLClient(ExtString query)
 
 	if (fromExists) 
 	{
-		if (query.indexOf("SELECT") == -1 || query.indexOf("SELECT") > query.indexOf("FROM") || (query.indexOf("WHERE") != -1 && query.indexOf("FROM") > query.indexOf("WHERE")))
-		{
-			return;
-		}
+		//if (query.indexOf("SELECT") == -1 || query.indexOf("SELECT") > query.indexOf("FROM") || (query.indexOf("WHERE") != -1 && query.indexOf("FROM") > query.indexOf("WHERE")))
+		//{
+		//	return;
+		//}
 
 		int conditionsIndex = query.indexOf("WHERE");
 		table = query.substring(query.indexOf("FROM") + 4, conditionsIndex != -1 ? conditionsIndex : query.length());

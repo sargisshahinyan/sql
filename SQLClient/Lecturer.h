@@ -18,5 +18,6 @@ public:
 	bool checkConditions(vector<ExtString>, Table*);
 	bool addData(vector<ExtString>);
 	size_t getSize();
+	virtual Table* allocateMemory(int);
 };
 

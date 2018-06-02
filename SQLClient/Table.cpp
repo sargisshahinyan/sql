@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "Table.h"
 
-#include <cstdlib>
 #include <cstring>
+#include <cstdlib>
 
 Table::Table()
 {
@@ -25,6 +25,7 @@ Table::~Table()
 {
 	if (data != NULL)
 	{
+		//delete[] data; 
 		free(data);
 	}
 
@@ -45,16 +46,14 @@ bool Table::deleteData(vector<ExtString> conditions)
 			--n;
 			if (n != i)
 			{
-				memmove(data + i, data + i + 1, sizeof(*this));
+				memmove(data + i, data + i + 1, this->getSize());
 				--i;
 			}
 		}
 	}
 
-	fwrite(data, sizeof(*this), n, f);
+	fwrite(data, this->getSize(), n, f);
 	fclose(f);
-
-	delete[] data;
 
 	cout << "Done\n";
 
@@ -69,11 +68,11 @@ void Table::readFile(int &n)
 	int size = ftell(f);
 	fseek(f, 0, SEEK_SET);
 
-	n = size / this->getSize();
+	n = size / getSize();
 
-	data = (Table*)malloc(this->getSize() * n);
+	data = allocateMemory(n);
 
-	fread(data, this->getSize(), n, f);
+	fread(data, getSize(), n, f);
 
 	fclose(f);
 }
