@@ -25,7 +25,7 @@ Table::~Table()
 {
 	if (data != NULL)
 	{
-		//delete[] data; 
+		// delete[] data; 
 		free(data);
 	}
 

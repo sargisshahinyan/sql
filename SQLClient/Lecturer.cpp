@@ -39,6 +39,8 @@ bool Lecturer::printData(vector<ExtString> conditions, vector<ExtString> fields)
 	int n;
 	readFile(n);
 
+	Lecturer *rows = static_cast<Lecturer*>(data);
+
 	for (int i = 0; i < fields.size(); ++i)
 	{
 		cout << fields[i] << '\t';
@@ -48,9 +50,7 @@ bool Lecturer::printData(vector<ExtString> conditions, vector<ExtString> fields)
 
 	for (int i = 0; i < n; ++i)
 	{
-		Lecturer *row = static_cast<Lecturer*>(data + i);
-
-		if (!checkConditions(conditions, data + i))
+		if (!checkConditions(conditions, rows + i))
 		{
 			continue;
 		}
@@ -59,15 +59,15 @@ bool Lecturer::printData(vector<ExtString> conditions, vector<ExtString> fields)
 		{
 			if (fields[j] == "name")
 			{
-				cout << row->name;
+				cout << rows[i].name;
 			}
 			else if (fields[j] == "lastName")
 			{
-				cout << row->lastName;
+				cout << rows[i].lastName;
 			}
 			else if (fields[j] == "dep")
 			{
-				cout << row->dep;
+				cout << rows[i].dep;
 			}
 
 			cout << '\t';
