@@ -1,30 +1,30 @@
 #include "stdafx.h"
-#include "Lecturer.h"
+#include "Laboratory.h"
+
+#include "stdafx.h"
 
 #include <iostream>
 
-Lecturer::Lecturer()
+Laboratory::Laboratory()
 {
 	keys = new char*[keysCount];
 }
 
-Lecturer::Lecturer(const char* path) :
+Laboratory::Laboratory(const char* path) :
 	Table(path)
 {
-	keysCount = 3;
+	keysCount = 2;
 	keys = new char*[keysCount];
 
 	keys[0] = new char[5];
-	keys[1] = new char[9];
-	keys[2] = new char[4];
+	keys[1] = new char[11];
 
 	strcpy(keys[0], "name");
-	strcpy(keys[1], "lastName");
-	strcpy(keys[2], "dep");
+	strcpy(keys[1], "roomNumber");
 }
 
 
-Lecturer::~Lecturer()
+Laboratory::~Laboratory()
 {
 	for (int i = 0; i < keysCount; i++)
 	{
@@ -34,12 +34,12 @@ Lecturer::~Lecturer()
 	delete[] keys;
 }
 
-bool Lecturer::printData(vector<ExtString> conditions, vector<ExtString> fields)
+bool Laboratory::printData(vector<ExtString> conditions, vector<ExtString> fields)
 {
 	int n;
 	readFile(n);
 
-	Lecturer *rows = static_cast<Lecturer*>(data);
+	Laboratory *rows = static_cast<Laboratory*>(data);
 
 	for (int i = 0; i < fields.size(); ++i)
 	{
@@ -61,13 +61,9 @@ bool Lecturer::printData(vector<ExtString> conditions, vector<ExtString> fields)
 			{
 				cout << rows[i].name;
 			}
-			else if (fields[j] == "lastName")
+			else if (fields[j] == "roomNumber")
 			{
-				cout << rows[i].lastName;
-			}
-			else if (fields[j] == "dep")
-			{
-				cout << rows[i].dep;
+				cout << rows[i].roomNumber;
 			}
 
 			cout << '\t';
@@ -79,11 +75,12 @@ bool Lecturer::printData(vector<ExtString> conditions, vector<ExtString> fields)
 	return true;
 }
 
-bool Lecturer::checkConditions(vector<ExtString> conditions, Table *data)
+bool Laboratory::checkConditions(vector<ExtString> conditions, Table *data)
 {
 	if (conditions.size() == 0)
 		return true;
-	Lecturer *ob = static_cast<Lecturer*>(data);
+
+	Laboratory *ob = static_cast<Laboratory*>(data);
 
 	for (int j = 0; j < conditions.size(); ++j)
 	{
@@ -99,13 +96,9 @@ bool Lecturer::checkConditions(vector<ExtString> conditions, Table *data)
 		{
 			isEqual = str == ob->name;
 		}
-		else if (conditions[j].indexOf("lastName") == 0)
+		else if (conditions[j].indexOf("roomNumber") == 0)
 		{
-			isEqual = str == ob->lastName;
-		}
-		else if (conditions[j].indexOf("dep") == 0)
-		{
-			isEqual = str == ob->dep;
+			isEqual = str == ob->roomNumber;
 		}
 
 		if (mustEqual ^ isEqual != 0)
@@ -118,9 +111,9 @@ bool Lecturer::checkConditions(vector<ExtString> conditions, Table *data)
 	return true;
 }
 
-bool Lecturer::addData(vector<ExtString> data)
+bool Laboratory::addData(vector<ExtString> data)
 {
-	Lecturer newItem;
+	Laboratory newItem;
 
 	if (data.size() != keysCount)
 	{
@@ -153,13 +146,9 @@ bool Lecturer::addData(vector<ExtString> data)
 		{
 			strcpy(newItem.name, data[i].substring(data[i].indexOf('=') + 1).trim().toString());
 		}
-		else if (data[i].indexOf("lastName") == 0)
+		else if (data[i].indexOf("roomNumber") == 0)
 		{
-			strcpy(newItem.lastName, data[i].substring(data[i].indexOf('=') + 1).trim().toString());
-		}
-		else if (data[i].indexOf("dep") == 0)
-		{
-			newItem.dep = (int)data[i].substring(data[i].indexOf('=') + 1).trim();
+			newItem.roomNumber = (int)data[i].substring(data[i].indexOf('=') + 1).trim();
 		}
 	}
 
@@ -174,24 +163,24 @@ bool Lecturer::addData(vector<ExtString> data)
 	return true;
 }
 
-size_t Lecturer::getSize()
+size_t Laboratory::getSize()
 {
-	return sizeof(Lecturer);
+	return sizeof(Laboratory);
 }
 
-Table* Lecturer::allocateMemory(int n)
+Table* Laboratory::allocateMemory(int n)
 {
 	// return new Lecturer[n];
 	return (Table*)malloc(getSize() * n);
 }
 
-bool Lecturer::deleteData(vector<ExtString> conditions)
+bool Laboratory::deleteData(vector<ExtString> conditions)
 {
 	int n;
 	readFile(n);
 
 	FILE *f = fopen(FILE_PATH, "wb");
-	Lecturer *rows = static_cast<Lecturer*>(data);
+	Laboratory *rows = static_cast<Laboratory*>(data);
 
 	for (int i = 0; i < n; ++i)
 	{

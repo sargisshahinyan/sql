@@ -6,6 +6,7 @@
 #include "Address.h"
 #include "Lecturer.h"
 #include "FilePath.h"
+#include "Laboratory.h"
 
 using namespace std;
 
@@ -46,9 +47,9 @@ SQLClient::SQLClient(ExtString query)
 	{
 		this->table = new Lecturer("lecturer.dat");
 	}
-	else if (table == "Address")
+	else if (table == "Laboratory")
 	{
-		//this->table = new Address("address.dat");
+		this->table = new Laboratory("laboratory.dat");
 	}
 	else
 	{

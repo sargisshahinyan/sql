@@ -269,7 +269,7 @@ ExtString ExtString::substring(const int start, const int end)
 	int len = strlen(str);
 	ExtString result = "";
 
-	if (start < 0 || end < 0 || start >= end || start >= len - 1 || end > len) 
+	if (start < 0 || end < 0 || start >= end ||  end > len) 
 	{
 		return result;
 	}
