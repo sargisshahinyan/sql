@@ -1,18 +1,15 @@
 #pragma once
-
 #include "Table.h"
-
-class Lecturer :
+class Laboratory :
 	public Table
 {
 private:
 	char name[200];
-	char lastName[200];
-	int dep;
+	int roomNumber;
 public:
-	Lecturer();
-	Lecturer(const char*);
-	~Lecturer();
+	Laboratory();
+	Laboratory(const char*);
+	~Laboratory();
 
 	bool printData(vector<ExtString>, vector<ExtString>);
 	bool checkConditions(vector<ExtString>, Table*);
@@ -21,4 +18,3 @@ public:
 	size_t getSize();
 	virtual Table* allocateMemory(int);
 };
-

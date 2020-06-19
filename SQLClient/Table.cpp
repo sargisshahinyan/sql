@@ -34,6 +34,7 @@ Table::~Table()
 
 bool Table::deleteData(vector<ExtString> conditions)
 {
+	return false;
 	int n;
 	readFile(n);
 

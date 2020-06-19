@@ -151,6 +151,7 @@
     <ClInclude Include="FilePath.h" />
     <ClInclude Include="Address.h" />
     <ClInclude Include="ExtString.h" />
+    <ClInclude Include="Laboratory.h" />
     <ClInclude Include="Lecturer.h" />
     <ClInclude Include="resource1.h" />
     <ClInclude Include="SQLClient.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Laboratory.cpp" />
     <ClCompile Include="Lecturer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ExtString.cpp" />
